@@ -4,6 +4,6 @@ robot-web
 Author
 ======
 
-+ Pascal Sigel
++ Oscar Silva
 
 Plataforma web para plataforma robotica.
