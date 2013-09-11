@@ -1,0 +1,17 @@
+comandos git:
+
+git add (nombre de los archivos o en su defecto --all) : agrega estos archivos en el espacio de trabajo no-oficialisado aún
+
+git commit -m "mensaje corto respecto al cambio" : cambio concreto del codigo listo para presentar (aunque sea chiquito)
+
+git push : sube al servidor.
+
+git pull : descarga nuevas actualizaciones que hicieron otras personas.
+
+Observar: cada commit es una version diferente, se le pueden poner tags a las versiones importantes.
+
+git branch : Te enlista las ramas, y con asterisco se marca la rama en que se encuentra.
+
+git branch nombre : se genera la rama nueva con nombre "nombre".
+
+git checkout  nombre : te cambia de rama.

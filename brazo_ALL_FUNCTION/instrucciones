@@ -1,3 +1,0 @@
-Esta aplicación se debe utilizar en conjunto de un arduino que debe tener el código contenido en la carpeta programas_arduino/moviendo_paras_con_ventosas_arduino/v1
-
-Nota: El puerto a usar debe ser calibrado manualmente en /lib/mover.py
