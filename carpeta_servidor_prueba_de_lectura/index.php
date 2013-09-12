@@ -1,37 +1,35 @@
 <!DOCTYPE html>
-
+<html>
 <head>
 	<title>Lectura del servidor</title>
 	<meta charset="UTF-8">
 	<script src="./lib/ConstructorXMLHttpRequest.js"></script>	
 	<script>
 		//Creamos la variable para el objeto XMLHttpRequest
-		var req = null; 
-
-		req = new ConstructorXMLHttpRequest();
+		var xmlhttp = null; 
+		xmlhttp = new ConstructorXMLHttpRequest();
 
 		//Función coger, en esta caso le entra una dirección relativa al documento actual
 		function Coger(archivo) 
 		{
 			url = 'lector.php?archivo=' + archivo;
-			//Si tenemos el objeto req
-			if(req) 
+			//Si tenemos el objeto xmlhttp
+			if(xmlhttp) 
 			{
 				//Abrimos la url, false=forma síncrona
-				req.open('GET', url, true); 
-				req.onreadystatechange = function() {
-					if(req.readyState == 4) {
-						document.getElementById('resultado').innerHTML = req.responseText;
-					}
+				xmlhttp.onreadystatechange = function() {					
+					if(xmlhttp.readyState == 4) 
+						document.getElementById('resultado').innerHTML = xmlhttp.responseText;
 				}
-				req.send(); 
+				xmlhttp.open('GET', url, true); 
+				xmlhttp.send(null); 
 			}
 			else
 			{
-				alert('Error: No se pudo crear el objeto XMLHttpRequest');
+				alert('Error: No se pudo crear el objeto XMLHttpRequest correctamente');
 			}
 		}
-
+		// Loop infinito (1000ms = 1s)
 		var temp = setInterval(function(){Coger('temperatura')}, 1000); 
 	</script>
 </head>
@@ -47,3 +45,4 @@
 
 	<div id="resultado"></div>
 </body>
+</html>

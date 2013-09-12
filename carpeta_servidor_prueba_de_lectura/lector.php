@@ -1,5 +1,4 @@
 <?php
-	
 	function lector(){
 	
 		$archivo = 	$_GET["archivo"];
@@ -8,11 +7,9 @@
 
 		if ($line = fgets($file)) {
 			$temp = explode("	", $line);	
-			fclose($file);  
-				
-			for ( $i = 0 ; $i < count($temp) ; $i++){	
-				echo '<div>', $temp[$i], '</div>';
-			}
+			fclose($file);
+			for ( $i = 0 ; $i < count($temp) ; $i++)
+				echo $temp[$i];
 		}
 		else {
 			echo 'Error: No se pudo cargar archivo <i>', $archivo, '</i>';		
