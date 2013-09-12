@@ -11,12 +11,11 @@
 			fclose($file);  
 				
 			for ( $i = 0 ; $i < count($temp) ; $i++){	
-				echo $temp[$i], "<br>";
+				echo '<div>', $temp[$i], '</div>';
 			}
-	
 		}
 		else {
-			echo "Error al cargar archivo";		
+			echo 'Error: No se pudo cargar archivo <i>', $archivo, '</i>';		
 		}
 	}
 
