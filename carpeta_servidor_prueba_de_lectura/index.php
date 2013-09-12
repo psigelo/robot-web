@@ -10,7 +10,7 @@
 
 		req = new ConstructorXMLHttpRequest();
 
-		//Función coger, en esta caso le entra una dirección relativa al documento actual.
+		//Función coger, en esta caso le entra una dirección relativa al documento actual
 		function Coger(archivo) 
 		{
 			url = 'lector.php?archivo=' + archivo;
@@ -31,6 +31,8 @@
 				alert('Error: No se pudo crear el objeto XMLHttpRequest');
 			}
 		}
+
+		var temp = setInterval(function(){Coger('temperatura')}, 1000); 
 	</script>
 </head>
 
