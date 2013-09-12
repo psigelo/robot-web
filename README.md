@@ -1,9 +1,4 @@
-robot-web
+Robot Web
 =========
-
-Author
-======
-
-+ Oscar Silva
 
 Plataforma web para plataforma robotica.
