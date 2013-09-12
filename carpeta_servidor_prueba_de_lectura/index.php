@@ -14,10 +14,14 @@
 	peticion01 = new ConstructorXMLHttpRequest();
 	function Coger(url) //Función coger, en esta caso le entra una dirección relativa al documento actual.
 	{
+		alert('tut');
 		if(peticion01) //Si tenemos el objeto peticion01
 		{
+			alert('tot');
 			peticion01.open('GET', url, true); //Abrimos la url, false=forma síncrona
 			peticion01.send(null); //No le enviamos datos al servidor
+			document.getElementById('resultado').innerHTML = peticion01.responseText;
+			alert('tyt');
 		}
 	}
 
@@ -33,6 +37,7 @@
 
 <div id="flecha_arriba" style="background-color:green; width:80px; height:60px;" onMouseOver="this.style.backgroundColor='brown';" onMouseOut="this.style.backgroundColor='green';" OnClick="Coger('lector.php?archivo=temperatura')"></div></td>
 
+<div id="respuesta"></div>
 
 
 </body>
