@@ -1,6 +1,6 @@
-
-<!-- $_GET["direccion"] -->
-
+<?php
+	exec("./lib/mover 127.0.0.1 51800 w".$_GET["direccion"]);
+?>
 
 <html>
 <head>

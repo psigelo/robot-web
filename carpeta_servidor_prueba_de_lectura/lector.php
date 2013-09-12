@@ -2,7 +2,7 @@
 	
 	function lector(){
 	
-		$file = fopen('temperatura','r');
+		$file = fopen($_GET["archivo"],'r');
 
 		if ($line = fgets($file)) {
 			$temp = explode("	", $line);	
