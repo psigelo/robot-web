@@ -13,7 +13,7 @@
 			for ( $i = 0 ; $i < count($temp) ; $i++){	
 				echo $temp[$i], "<br>";
 			}
-			return $temp;
+	
 		}
 		else {
 			echo "Error al cargar archivo";		
