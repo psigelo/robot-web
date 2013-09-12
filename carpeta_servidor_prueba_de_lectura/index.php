@@ -7,13 +7,14 @@
 <head>
 	<title>Lectura del servidor</title>
 	<meta charset="UTF-8">
+	<script language="javascript" src="./lib/ConstructorXMLHttpRequest.js"></script>	
 	<script>
 	var peticion01 = null; //Creamos la variable para el objeto XMLHttpRequest
 	//Este ejemplo emplea un constructor, debería funcionar en cualquier navegador.
 	peticion01 = new ConstructorXMLHttpRequest();
 	function Coger(url) //Función coger, en esta caso le entra una dirección relativa al documento actual.
 	{
-		alert('tut');
+		alert('tugitt');
 		if(peticion01) //Si tenemos el objeto peticion01
 		{
 			
