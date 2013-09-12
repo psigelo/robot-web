@@ -18,6 +18,7 @@
 		{
 			peticion01.open('GET', url, true); //Abrimos la url, false=forma síncrona
 			peticion01.send(null); //No le enviamos datos al servidor
+			alert("asdf");
 		}
 	}
 
