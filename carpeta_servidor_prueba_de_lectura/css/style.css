@@ -1,0 +1,44 @@
+html {
+	padding: 0px;
+	margin: 0px;
+}
+body { 
+	background-image: url("../img/background.png");
+	color: lightgray;
+}
+#contenedor {
+	margin: 0 auto;
+	width: 923px;
+}
+#info-izquierda {
+	background: url(../img/div-left.png) no-repeat;
+	width: 140px;
+	height: 407px;
+	float: left;
+}
+#video-stream {
+	text-align:center; 
+	width: 635px;
+	height: 407px;
+	float: left;
+}
+#info-derecha {
+	background: url(../img/div-right.png) no-repeat;
+	width: 140px;
+	height: 407px;
+	float: left;
+}
+#controlador {
+	background: url(../img/div-center.png) no-repeat;
+	width: 923px;
+	height: 253px;
+	float: left;
+}
+
+
+
+
+
+
+/* TMP - Borrar 
+div{ border: 1px solid blue;}*/
