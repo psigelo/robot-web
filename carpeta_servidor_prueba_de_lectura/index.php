@@ -6,73 +6,60 @@
 	<link rel="stylesheet" href="./css/style.css"/>
 	<script src="./lib/ConstructorXMLHttpRequest.js"></script>	
 	<script>
-		//Creamos la variable para el objeto XMLHttpRequest
-		var xmlhttp = null; 
-		xmlhttp = ConstructorXMLHttpRequest();
+		// Creamos la variable para el objeto XMLHttpRequest
+		var xmlhttp = ConstructorXMLHttpRequest();		
 
-		//Función coger, en esta caso le entra una dirección relativa al documento actual
-		function Coger(archivo) 
-		{
-			url = 'lector.php?archivo=' + archivo;
-			//Si tenemos el objeto xmlhttp
-			if(xmlhttp) 
-			{
-				xmlhttp.onreadystatechange = function() {					
-					if(xmlhttp.readyState == 4) 
-					{
-						if (xmlhttp.overrideMimeType) xmlhttp.overrideMimeType('text/xml');
-
-						var xmlDoc;
-
-						xmlDoc = xmlhttp.responseXML;
-					    if (!xmlDoc) xmlDoc = (new DOMParser()).parseFromString(xmlhttp.responseText, 'text/xml');
-					    
-					    var lista = xmlDoc.getElementsByTagName('motor');
-					    var motores = "";
-
-					    for (var i = 0 ; i < lista.length ; i++)
-						  motores = motores + lista[i].childNodes[0].nodeValue + "<br>";
-
-						document.getElementById('resultado').innerHTML = motores;
-					}
-				}
-				xmlhttp.open('GET', url, true); 		
-				xmlhttp.send(null); 
-			}
-			else
-			{
-				alert('Error: No se pudo crear el objeto XMLHttpRequest correctamente');
-			}
-		}
-
-		
-	</script>
-	<script>
-
-		// Loop infinito (1000ms = 1s)
-		//var temp = setInterval(function(){Coger('temperatura')}, 1000); 
-
-		var numMotores = 6; //valor temporal de prueba
+		// Datos generales del robot (valores temporales de prueba)
+		var numMotores = 6;
 		var anchoDivisiones = 240/numMotores;
 		var anchoBarras = anchoDivisiones/2; 
 		var offset = anchoBarras/2;
 
-		function tempInit(){
-	        var canvas = document.getElementById('temperatura');
-	        if (canvas.getContext){
-	        	var ctx = canvas.getContext('2d');
+		//Función Coger, en esta caso le entra una dirección relativa al documento actual
+		function Coger(archivo)
+		{
+			var url = 'lector.php?archivo=' + archivo;
 
-	        	for (var i = 0; i < numMotores; i++) {
-	        		ctx.fillStyle = "#BF5000"; // color temporal
-		        	ctx.fillRect (20, 110 + i*anchoDivisiones + offset, 112, anchoBarras);
-	        	};
-	        }
-	    }
+			if(xmlhttp)
+			{
+				xmlhttp.onreadystatechange = function() {
+					if(xmlhttp.readyState == 4)
+					{
+						if (xmlhttp.overrideMimeType) xmlhttp.overrideMimeType('text/xml');
+
+						var xmlDoc = xmlhttp.responseXML;
+
+					    if (!xmlDoc) xmlDoc = (new DOMParser()).parseFromString(xmlhttp.responseText, 'text/xml');
+					    
+					    var tempMotores = xmlDoc.getElementsByTagName('motor');
+						
+						var canvas = document.getElementById('temperatura');
+
+						if (canvas.getContext){
+    						var ctx = canvas.getContext('2d');
+					        for (var i = 0; i < numMotores; i++) {
+					        	ctx.fillStyle = "#BF5000"; // color temporal
+						       	ctx.fillRect (20, 110 + i*anchoDivisiones + offset, 112, anchoBarras);
+						       	ctx.clearRect(20, 110 + i*anchoDivisiones + offset, 112*(1 - (tempMotores[i].childNodes[0].nodeValue)/90), anchoBarras);
+					        };
+				    	}
+				    	else alert('Error: No se pudo obtener el contexto [canvas.getContext()]');
+					}
+				}
+				xmlhttp.open('GET', url, true);
+				xmlhttp.send(null);
+			}
+			else alert('Error: No se pudo crear el objeto XMLHttpRequest');
+		}
+
+		// Loop infinito cada 1000ms = 1s
+		var temp = setInterval(function(){Coger('temperatura')}, 1000); 
+		
+
 	</script>
 </head>
 
-<body onload="tempInit();">
-
+<body>
 <div id="contenedor">
 	<div id="visualizador"> 
 		<div id="info-izquierda">
@@ -88,23 +75,6 @@
 		<div></div>
 	</div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	<div id="flecha_arriba" style="display:none; background-color:green; width:80px; height:60px;" onMouseOver="this.style.backgroundColor='brown';" onMouseOut="this.style.backgroundColor='green';" OnClick="Coger('temperatura')"></div></td>
-
-	<div id="resultado"></div>
+<div id="resultado"></div>
 </body>
 </html>

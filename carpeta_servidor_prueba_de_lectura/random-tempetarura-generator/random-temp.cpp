@@ -12,12 +12,12 @@ int main()
 	{
 		ofstream archivo;
 		archivo.open("../temperatura", ios::trunc);
-		archivo << rand() % 150 + -30 << "	";
-		archivo << rand() % 150 + -30 << "	";
-		archivo << rand() % 150 + -30 << "	";
-		archivo << rand() % 150 + -30 << "	";
-		archivo << rand() % 150 + -30 << "	";
-		archivo << rand() % 150 + -30;
+		archivo << rand() % 90 + 0 << "	";
+		archivo << rand() % 90 + 0 << "	";
+		archivo << rand() % 90 + 0 << "	";
+		archivo << rand() % 90 + 0 << "	";
+		archivo << rand() % 90 + 0 << "	";
+		archivo << rand() % 90 + 0;
 		archivo.close();
 		sleep(1);
 	} while (1);
