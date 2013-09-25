@@ -7,8 +7,6 @@
 	<script src="./lib/ConstructorXMLHttpRequest.js"></script>
 	<script>
 
-		// ESTANDAR: camelCase
-
 //==============================================================================
 
 		// Rutas de archivos
@@ -22,25 +20,25 @@
 //==============================================================================
 
 		// Configuración General Robot
-		var nombre;
-		var descripcion;
+		var nombreRobot;
+		var descripcionRobot = new Array();
 		var autores = new Array();
 		var titulo = new Array();
-		var descripcion = new Array();
-		var numMotores;
-		var numPatas;
-		var numArticulaciones;
+		var numeroMotores;
+		var numeroPatas;
+		var numeroArticulaciones;
 
 //==============================================================================
 
 		// Configuración General Gráficas
 
-		var izquierdaTipo = 1; // Tipo: 0 Barra | 1 Torta 
+		// Distribuciones
+		var izquierdaTipo = 1; 		// Tipo: 0 Barra | 1 Torta 
 		var derechaTipo = 0;
-		var izquierdaEscalar = 0; // Escalar: 0 Temperatura | 1 Corriente
+		var izquierdaEscalar = 0; 	// Escalar: 0 Temperatura | 1 Corriente
 		var derechaEscalar = 1;
 
-		// Nombre de los archivos contenedores de datos
+		// Archivos de lectura de datos
 		var archivos = new Array();
 		archivos[0] = rutaTemperatura;
 		archivos[1] = rutaCorriente;
@@ -68,6 +66,9 @@
 
 		// Configuración Tipo Torta
 		var radioMax = anchoCanvas * 0.4; 
+		var anchoLeyenda = paddingB / 2; // Por ahora "paddingB"
+		var numeroSubDivisiones = 3; // Degrade entre dos términos leyenda
+		var anchoSubDivisiones = anchoGrilla / (numeroDivisiones * numeroSubDivisiones);
 
 		// Otros
 		var valorMaximo = new Array();
@@ -148,9 +149,9 @@
 	  				ctx.fillText(Math.floor(valorMinimo[esc]) + unidad[esc], anchoCanvas-paddingLR, paddingT - 5);
 
 	  				// Tamaño de fuentes para ID de motores
-	  				if 		(numMotores >= 24) 	ctx.font = '7px Arial';
-	  				else if (numMotores >= 15) 	ctx.font = '10px Arial';
-	  				else if (numMotores > 0) 	ctx.font = '15px Arial';
+	  				if 		(numeroMotores >= 24) 	ctx.font = '7px Arial';
+	  				else if (numeroMotores >= 15) 	ctx.font = '10px Arial';
+	  				else if (numeroMotores > 0) 	ctx.font = '15px Arial';
 	  						
   					var largoBarra; 
   					var rojo;
@@ -158,13 +159,13 @@
   					var azul = 0;
 
 	  				// Dibujar barras + IDs
-					for (var i = 0 ; i < numMotores ; i++) {
+					for (var i = 0 ; i < numeroMotores ; i++) {
 						largoBarra = anchoGrilla * (datos[i] - valorMinimo[esc]) / (valorMaximo[esc] - valorMinimo[esc]);
 						rojo = Math.floor(255 * (datos[i] - valorMinimo[esc]) / (valorMaximo[esc] - valorMinimo[esc]));
 						verde = 255-rojo;
 						ctx.fillStyle = 'rgb(' + rojo + ',' + verde + ', ' + azul + ')';
 						ctx.fillText(i + 1, (pos) ? paddingLR - 10 : anchoGrilla + paddingLR + 10, paddingT + i * anchoDivisiones + 2 * anchoBarras);
-						ctx.fillRect((pos) ? paddingLR : anchoGrilla - largoBarra + paddingLR, paddingT+i*anchoDivisiones+anchoBarras, largoBarra, anchoBarras);
+						ctx.fillRect((pos) ? paddingLR : anchoGrilla - largoBarra + paddingLR, paddingT + i * anchoDivisiones + offset, largoBarra, anchoBarras);
 					}
 				}
 
@@ -179,27 +180,39 @@
 					ctx.translate(canvas.offsetWidth/2,canvas.offsetHeight/2);
 					ctx.strokeStyle = '#202020';
 
-					for (var j = numArticulaciones, k = 0 ; j > 0 ; j--) {
+					for (var j = numeroArticulaciones, k = 0 ; j > 0 ; j--) {
 							
 						ctx.save();
-						for (var i = 0; i < numPatas ; i++){ 
+						for (var i = 0; i < numeroPatas ; i++){ 
 							rojo = Math.floor(255*(datos[k++] - valorMinimo[esc])/(valorMaximo[esc]-valorMinimo[esc]));
 							verde = 255 - rojo;
 							ctx.fillStyle = 'rgb(' + rojo + ',' + verde + ',' + azul + ')'; 
 
 							ctx.beginPath();
 							ctx.moveTo(0,0);
-							ctx.lineTo(radioMax*j/numArticulaciones,0);
-							ctx.arc(0,0,radioMax*j/numArticulaciones,0,Math.PI*2/numPatas,false);
+							ctx.lineTo(radioMax *  j / numeroArticulaciones, 0);
+							ctx.arc(0,0,radioMax * j / numeroArticulaciones, 0, Math.PI * 2 / numeroPatas, false);
 							ctx.closePath();
 							ctx.fill();
 							ctx.stroke();
 
-							ctx.rotate(Math.PI*2/numPatas);
+							ctx.rotate(Math.PI * 2 / numeroPatas);
 						}
 						ctx.restore();
 					}
 					ctx.restore();
+
+					ctx.font = '7px Arial'; 
+
+					for (var i = 0 ; i < numeroDivisiones * numeroSubDivisiones ; i++) {
+						rojo = Math.floor(255 * (1 - i / (numeroSubDivisiones * numeroDivisiones)));
+						verde = 255 - rojo;
+						ctx.fillStyle = 'rgb(' + rojo + ',' + verde + ',' + azul + ')';
+						if (i % numeroSubDivisiones == 0) 
+							ctx.fillText(diferenciaValor[esc] * (numeroDivisiones - i / numeroSubDivisiones) + valorMinimo[esc] + unidad[esc], diferenciaLargo * i / numeroSubDivisiones + paddingLR, altoCanvas - paddingB - anchoLeyenda - 5);
+						ctx.fillRect(paddingLR + anchoSubDivisiones * i, altoCanvas - paddingB - anchoLeyenda, anchoSubDivisiones, anchoLeyenda);
+					}
+					ctx.fillText(valorMinimo[esc] + unidad[esc], anchoGrilla + paddingLR, altoCanvas - paddingB - anchoLeyenda - 5);
 				}
 			}
 			else alert('Error: No se pudo cargar el objeto canvas');
@@ -214,18 +227,17 @@
 			var config = <?php echo file_get_contents('config'); ?>; // TMP -- Cambiar!
 
 			// Datos Generales Robot
-			nombre = config.nombre;
-			descripcion = config.descripcion;
-			numPatas = config.numPatas;
-			numArticulaciones = config.numArticulaciones;
-			numMotores = numPatas*numArticulaciones;
+			nombreRobot = config.nombre;
+			numeroPatas = config.numPatas;
+			numeroArticulaciones = config.numArticulaciones;
+			numeroMotores = numeroPatas*numeroArticulaciones;
 
 			for (var i = 0; i < config.autores.length; i++) {
 				autores[i] = config.autores[i];
 			};
 
 			// Configuración Tipo Barra
-			anchoDivisiones = altoGrilla/numMotores;
+			anchoDivisiones = altoGrilla/numeroMotores;
 			anchoBarras = anchoDivisiones/2; 
 			offset = anchoBarras/2;
 
@@ -236,12 +248,12 @@
 				diferenciaValor[i] = Math.floor((valorMaximo[i] - valorMinimo[i]) / numeroDivisiones);
 				unidad[i] = config.grafico[i].unidad;
 				titulo[i] = config.grafico[i].titulo;
-				descripcion[i] = config.grafico[i].descripcion;
+				descripcionRobot[i] = config.grafico[i].descripcion;
 			};
 		}
 
-		var temp_izquierda = setInterval(function(){Coger(0)}, tiempoLoop);
-		var temp_derecha = setInterval(function(){Coger(1)}, tiempoLoop);
+		var tempIzquierda = setInterval(function(){Coger(0)}, tiempoLoop);
+		var tempDerecha = setInterval(function(){Coger(1)}, tiempoLoop);
 
 	//==============================================================================
 	// TEST TMP
