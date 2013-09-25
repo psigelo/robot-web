@@ -1,0 +1,15 @@
+{	
+	"nombre" : "CRABOT",
+	"descripcion" : "none",
+	"autores" : [ 
+				"Oscar Silva", 
+				"Yen-kung Yu", 
+				"Tenison"
+				],
+	"numPatas" : 6,
+	"numArticulaciones" : 4, 
+	"grafico" : [ 
+				{"titulo" : "Temperatura",	"valorMax" : 90,	"valorMin" : 0,	"unidad" : "ºC"}, 
+				{"titulo" : "Corriente",	"valorMax" : 10,	"valorMin" : 0,	"unidad" : "A"},
+				]
+}
