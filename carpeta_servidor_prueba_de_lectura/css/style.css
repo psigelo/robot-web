@@ -15,11 +15,11 @@ nav {
 }
 #canvas_0 {
 	float: right;
-	border: 1px solid red;
+	/*border: 1px solid red;*/
 }
 #canvas_1 {
 	float: left;
-	border: 1px solid red;
+	/*border: 1px solid red;*/
 }
 #contenedor {
 	margin: 0 auto;
@@ -90,5 +90,5 @@ ul li:hover ul {
 }
 
 
-/* TMP - Borrar */
-div{ border: 1px solid blue;}
+/* TMP - Borrar 
+div{ border: 1px solid blue;}*/

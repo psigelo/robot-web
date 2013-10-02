@@ -10,6 +10,7 @@
 //==============================================================================
 
 		// Rutas de archivos
+
 		var rutaPrincipal = ''; // Posición relativa
 		var rutaConfig = rutaPrincipal + 'config';
 		var rutaLector = rutaPrincipal + 'lector.php';
@@ -20,6 +21,7 @@
 //==============================================================================
 
 		// Configuración General Robot
+
 		var nombreRobot;
 		var descripcionRobot = new Array();
 		var autores = new Array();
@@ -32,10 +34,10 @@
 
 		// Configuración General Gráficas
 
-		// Distribuciones
-		var izquierdaTipo = 1; 		// Tipo: 0 Barra | 1 Torta 
+		// Distribución
+		var izquierdaTipo = 1; 		// Tipo: 0 Barra | 1 Torta | ...
 		var derechaTipo = 0;
-		var izquierdaEscalar = 0; 	// Escalar: 0 Temperatura | 1 Corriente
+		var izquierdaEscalar = 0; 	// Escalar: 0 Temperatura | 1 Corriente | ...
 		var derechaEscalar = 1;
 
 		// Archivos de lectura de datos
@@ -43,31 +45,32 @@
 		archivos[0] = rutaTemperatura;
 		archivos[1] = rutaCorriente;
 
-		// Tiempo de refresco de la pantalla [ms]
-		var tiempoLoop = 1000; // Por defecto 1000[ms]
+		// Tiempo de refresco de la pantalla ( Por defecto 1000[ms] )
+		var tiempoLoop = 1000; 
 
 //==============================================================================
 
 		// Configuración General Canvas
-		var anchoCanvas = 300; 									// Ancho canvas [px]
-		var altoCanvas = anchoCanvas * 4 / 3; 					// Alto canvas [px]
+
+		var anchoCanvas = 300; 									
+		var altoCanvas = anchoCanvas * 4 / 3; 					
 
 		// Configuración Tipo Barra
-		var paddingLR = 40; 									// Padding Left-Right
-		var paddingT = 70; 										// Padding Top
-		var paddingB = 30; 										// Padding Bottom
-		var anchoGrilla = anchoCanvas - 2 * paddingLR; 			// Ancho Grilla [px]
-		var altoGrilla = altoCanvas - (paddingT + paddingB);	// Alto Grilla [px]
+		var paddingLR = anchoCanvas * 4 / 30; 					// Padding Left-Right
+		var paddingT = anchoCanvas * 7 / 30; 					// Padding Top
+		var paddingB = anchoCanvas / 10; 						// Padding Bottom
+		var anchoGrilla = anchoCanvas - 2 * paddingLR; 			
+		var altoGrilla = altoCanvas - (paddingT + paddingB);	
 		var numeroDivisiones = 3; 								// Número Divisiones Grilla (>= 1)
-		var diferenciaLargo = anchoGrilla/numeroDivisiones;
+		var diferenciaLargo = anchoGrilla / numeroDivisiones;
 		var anchoDivisiones;
 		var anchoBarras;  
 		var offset;
 
 		// Configuración Tipo Torta
 		var radioMax = anchoCanvas * 0.4; 
-		var anchoLeyenda = paddingB / 2; // Por ahora "paddingB"
-		var numeroSubDivisiones = 3; // Degrade entre dos términos leyenda
+		var anchoLeyenda = paddingB / 2; // Por defecto "paddingB/2"
+		var numeroSubDivisiones = 3; // Degrade entre dos términos de la leyenda
 		var anchoSubDivisiones = anchoGrilla / (numeroDivisiones * numeroSubDivisiones);
 
 		// Otros
@@ -78,17 +81,14 @@
 
 //==============================================================================
 
-		// Lee los datos de 'archivo' y genera una gráfica con los mismo en
+		// Lee los datos de 'archivo' y genera una gráfica con los mismo en la
 		// posición: 0 izquierda | 1 derecha
 		function Coger(pos)
 		{
 			var xmlhttp = ConstructorXMLHttpRequest();
 			if(!xmlhttp) alert('Error: No se pudo crear el objeto XMLHttpRequest');
 			else {
-				// Entra si se pudo crear el objeto XMLHttpRequest
 				xmlhttp.onreadystatechange = function() {
-
-					// Una vez cargados todo ...
 					if(xmlhttp.readyState == 4)
 					{
 						if(pos == 0) {
@@ -121,7 +121,7 @@
 				var ctx = canvas.getContext('2d');
 
 				// Limpia las gráficas previas
-				ctx.clearRect(0,0,canvas.offsetWidth,canvas.offsetHeight);
+				ctx.clearRect(0, 0, canvas.offsetWidth,canvas.offsetHeight);
 
 				// Título
 	  			ctx.shadowBlur = 20;
@@ -129,14 +129,13 @@
 				ctx.font = '17px Arial';
 	  			ctx.fillStyle = 'White';
 	  			ctx.textAlign = 'center';
-	  			ctx.fillText(titulo[esc],canvas.offsetWidth/2, 40);
-	  			ctx.shadowColor = 'rgba(0,0,0,0)';
+	  			ctx.fillText(titulo[esc], canvas.offsetWidth / 2, 40);
+	  			ctx.shadowBlur = 0;
 
 	  			// TIPO BARRA
 				if (tipo == 0 ) {
 
 					// Re-definimos valores para la sombra y el texto
-	  				ctx.shadowBlur = 0;	
 	  				ctx.strokeStyle = '#464646';
 	  				ctx.fillStyle = '#6B6B6B';
 	  				ctx.font = '7px Arial';  
@@ -146,7 +145,7 @@
 						ctx.fillText(diferenciaValor[esc] * (numeroDivisiones - i) + valorMinimo[esc] + unidad[esc], diferenciaLargo * i + paddingLR, paddingT - 5);	
 						ctx.strokeRect(diferenciaLargo * i + paddingLR, paddingT, diferenciaLargo, altoGrilla);
 					}
-	  				ctx.fillText(Math.floor(valorMinimo[esc]) + unidad[esc], anchoCanvas-paddingLR, paddingT - 5);
+	  				ctx.fillText(valorMinimo[esc] + unidad[esc], anchoCanvas-paddingLR, paddingT - 5);
 
 	  				// Tamaño de fuentes para ID de motores
 	  				if 		(numeroMotores >= 24) 	ctx.font = '7px Arial';
@@ -160,9 +159,10 @@
 
 	  				// Dibujar barras + IDs
 					for (var i = 0 ; i < numeroMotores ; i++) {
+
 						largoBarra = anchoGrilla * (datos[i] - valorMinimo[esc]) / (valorMaximo[esc] - valorMinimo[esc]);
 						rojo = Math.floor(255 * (datos[i] - valorMinimo[esc]) / (valorMaximo[esc] - valorMinimo[esc]));
-						verde = 255-rojo;
+						verde = 255 - rojo;
 						ctx.fillStyle = 'rgb(' + rojo + ',' + verde + ', ' + azul + ')';
 						ctx.fillText(i + 1, (pos) ? paddingLR - 10 : anchoGrilla + paddingLR + 10, paddingT + i * anchoDivisiones + 2 * anchoBarras);
 						ctx.fillRect((pos) ? paddingLR : anchoGrilla - largoBarra + paddingLR, paddingT + i * anchoDivisiones + offset, largoBarra, anchoBarras);
@@ -177,44 +177,66 @@
   					var azul = 0;
 
 					ctx.save();
+
+					// Traslada el eje de coordenadas del CANVAS al centro de éste
 					ctx.translate(canvas.offsetWidth/2,canvas.offsetHeight/2);
+
 					ctx.strokeStyle = '#202020';
+					ctx.font = '60px Arial';
 
 					for (var j = numeroArticulaciones, k = 0 ; j > 0 ; j--) {
 							
 						ctx.save();
-						for (var i = 0; i < numeroPatas ; i++){ 
-							rojo = Math.floor(255*(datos[k++] - valorMinimo[esc])/(valorMaximo[esc]-valorMinimo[esc]));
+						for (var i = 0 ; i < numeroPatas ; i++) {
+
+							rojo = Math.floor(255 * (datos[k++] - valorMinimo[esc]) / (valorMaximo[esc] - valorMinimo[esc]));
 							verde = 255 - rojo;
 							ctx.fillStyle = 'rgb(' + rojo + ',' + verde + ',' + azul + ')'; 
 
+							// Dibuja un pedazo de "torta"
 							ctx.beginPath();
-							ctx.moveTo(0,0);
-							ctx.lineTo(radioMax *  j / numeroArticulaciones, 0);
-							ctx.arc(0,0,radioMax * j / numeroArticulaciones, 0, Math.PI * 2 / numeroPatas, false);
+							ctx.moveTo(0, 0);
+							ctx.arc(0, 0, radioMax * j / numeroArticulaciones, - Math.PI / 2, - Math.PI / 2 + Math.PI * 2 / numeroPatas, false);
 							ctx.closePath();
 							ctx.fill();
 							ctx.stroke();
 
-							ctx.rotate(Math.PI * 2 / numeroPatas);
+							ctx.rotate(Math.PI / numeroPatas);
+
+							// Dibuja el ID de la pata actual
+							if(j == 1) { 
+								ctx.fillStyle = 'rgba(0,0,0,0.5)';
+								ctx.fillText(i + 1, 0, - radioMax / 2.5);
+							}
+
+							ctx.rotate(Math.PI / numeroPatas);
 						}
 						ctx.restore();
 					}
+
 					ctx.restore();
 
+					// Leyenda de Colores
 					ctx.font = '7px Arial'; 
 
 					for (var i = 0 ; i < numeroDivisiones * numeroSubDivisiones ; i++) {
+
 						rojo = Math.floor(255 * (1 - i / (numeroSubDivisiones * numeroDivisiones)));
 						verde = 255 - rojo;
 						ctx.fillStyle = 'rgb(' + rojo + ',' + verde + ',' + azul + ')';
-						if (i % numeroSubDivisiones == 0) 
+
+						// Escribe el valor del escalar actual
+						if (i % numeroSubDivisiones == 0) {
 							ctx.fillText(diferenciaValor[esc] * (numeroDivisiones - i / numeroSubDivisiones) + valorMinimo[esc] + unidad[esc], diferenciaLargo * i / numeroSubDivisiones + paddingLR, altoCanvas - paddingB - anchoLeyenda - 5);
+						}
+
+						// Dibuja el cuadrado de color acorde a la temperatura
 						ctx.fillRect(paddingLR + anchoSubDivisiones * i, altoCanvas - paddingB - anchoLeyenda, anchoSubDivisiones, anchoLeyenda);
 					}
 					ctx.fillText(valorMinimo[esc] + unidad[esc], anchoGrilla + paddingLR, altoCanvas - paddingB - anchoLeyenda - 5);
 				}
 			}
+
 			else alert('Error: No se pudo cargar el objeto canvas');
 		}
 
@@ -232,9 +254,9 @@
 			numeroArticulaciones = config.numArticulaciones;
 			numeroMotores = numeroPatas*numeroArticulaciones;
 
-			for (var i = 0; i < config.autores.length; i++) {
+			for (var i = 0 ; i < config.autores.length ; i++) {
 				autores[i] = config.autores[i];
-			};
+			}
 
 			// Configuración Tipo Barra
 			anchoDivisiones = altoGrilla/numeroMotores;
@@ -249,19 +271,19 @@
 				unidad[i] = config.grafico[i].unidad;
 				titulo[i] = config.grafico[i].titulo;
 				descripcionRobot[i] = config.grafico[i].descripcion;
-			};
+			}
 		}
 
+		// Loop de funciones
 		var tempIzquierda = setInterval(function(){Coger(0)}, tiempoLoop);
 		var tempDerecha = setInterval(function(){Coger(1)}, tiempoLoop);
 
-	//==============================================================================
-	// TEST TMP
-		function test(tipo, posicion){
+//==============================================================================
+		function cambiarTipo(tipo, posicion) {
 			if(posicion == 0) izquierdaTipo = tipo; 
 			else if(posicion == 1) derechaTipo = tipo;
 		}
-	//==============================================================================
+//==============================================================================
 
 	</script>
 </head>
@@ -275,11 +297,11 @@
 			<li>About</li>
 			<li>Vista
 			    <ul>Visor Izquierdo
-			    	<li onclick='test(0,0)'>Barra</li>
-			    	<li onclick='test(1,0)'>Torta</li>
+			    	<li onclick='cambiarTipo(0,0)'>Barra</li>
+			    	<li onclick='cambiarTipo(1,0)'>Torta</li>
 			    	Visor Derecho
-			    	<li onclick='test(0,1)'>Barra</li>
-			    	<li onclick='test(1,1)'>Torta</li>
+			    	<li onclick='cambiarTipo(0,1)'>Barra</li>
+			    	<li onclick='cambiarTipo(1,1)'>Torta</li>
 			    </ul>
 			</li>
 			<li>Ayuda</li>
