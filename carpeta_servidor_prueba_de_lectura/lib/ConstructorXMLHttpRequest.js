@@ -1,3 +1,4 @@
+
 function ConstructorXMLHttpRequest()
 {
 if(window.XMLHttpRequest) /*Vemos si el objeto window (la base de

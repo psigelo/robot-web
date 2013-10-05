@@ -1,22 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-	<title>Lectura del servidor</title>
-	<meta charset="UTF-8">
-	<link rel="stylesheet" href="./css/style.css"/>
-	<script src="./lib/ConstructorXMLHttpRequest.js"></script>
-	<script>
 
 //==============================================================================
 
 		// Rutas de archivos
 
-		var rutaPrincipal = ''; // Posición relativa
-		var rutaConfig = rutaPrincipal + 'config';
-		var rutaLector = rutaPrincipal + 'lector.php';
-		var rutaTemperatura = rutaPrincipal + 'temperatura';
-		var rutaCorriente = rutaPrincipal + 'corriente';
-		//var rutaLectorJSON = rutaPrincipal + 'lectorJSON.php';
+		var rutaConfig = 'config';
+		var rutaLector = 'lector.php';
+		var rutaTemperatura = 'temperatura';
+		var rutaCorriente = 'corriente';
+		//var rutaLectorJSON = 'lectorJSON.php';
 
 //==============================================================================
 
@@ -83,7 +74,7 @@
 
 		// Lee los datos de 'archivo' y genera una gráfica con los mismo en la
 		// posición: 0 izquierda | 1 derecha
-		function Coger(pos)
+		function Cargar(pos)
 		{
 			var xmlhttp = ConstructorXMLHttpRequest();
 			if(!xmlhttp) alert('Error: No se pudo crear el objeto XMLHttpRequest');
@@ -91,6 +82,7 @@
 				xmlhttp.onreadystatechange = function() {
 					if(xmlhttp.readyState == 4)
 					{
+						console.log(xmlhttp.responseText);
 						if(pos == 0) {
 							dibujarGrafica(JSON.parse(xmlhttp.responseText), pos, izquierdaEscalar, izquierdaTipo);
 						}
@@ -246,37 +238,50 @@
 		function config(){
 
 			// Creamos un objeto con todos los datos del archivo
-			var config = <?php echo file_get_contents('config'); ?>; // TMP -- Cambiar!
+			//var config = <?php echo file_get_contents('../config'); ?>; // TMP -- Cambiar!
+			var xmlhttp = ConstructorXMLHttpRequest();
+			if(!xmlhttp) alert('Error: No se pudo crear el objeto XMLHttpRequest');
+			else {
+				
+				xmlhttp.onreadystatechange = function() {
+					if(xmlhttp.readyState == 4)
+					{
+						var config = JSON.parse(xmlhttp.responseText);
 
-			// Datos Generales Robot
-			nombreRobot = config.nombre;
-			numeroPatas = config.numPatas;
-			numeroArticulaciones = config.numArticulaciones;
-			numeroMotores = numeroPatas*numeroArticulaciones;
+						// Datos Generales Robot
+						nombreRobot = config.nombre;
+						numeroPatas = config.numPatas;
+						numeroArticulaciones = config.numArticulaciones;
+						numeroMotores = numeroPatas * numeroArticulaciones;
 
-			for (var i = 0 ; i < config.autores.length ; i++) {
-				autores[i] = config.autores[i];
-			}
+						for (var i = 0 ; i < config.autores.length ; i++) {
+							autores[i] = config.autores[i];
+						}
 
-			// Configuración Tipo Barra
-			anchoDivisiones = altoGrilla/numeroMotores;
-			anchoBarras = anchoDivisiones/2; 
-			offset = anchoBarras/2;
+						// Configuración Tipo Barra
+						anchoDivisiones = altoGrilla/numeroMotores;
+						anchoBarras = anchoDivisiones/2; 
+						offset = anchoBarras/2;
 
-			// Configuración General Gráfica
-			for (var i = 0 ; i < config.grafico.length ; i++) {
-				valorMaximo[i] = config.grafico[i].valorMax;
-				valorMinimo[i] = config.grafico[i].valorMin;
-				diferenciaValor[i] = Math.floor((valorMaximo[i] - valorMinimo[i]) / numeroDivisiones);
-				unidad[i] = config.grafico[i].unidad;
-				titulo[i] = config.grafico[i].titulo;
-				descripcionRobot[i] = config.grafico[i].descripcion;
+						// Configuración General Gráfica
+						for (var i = 0 ; i < config.grafico.length ; i++) {
+							valorMaximo[i] = config.grafico[i].valorMax;
+							valorMinimo[i] = config.grafico[i].valorMin;
+							diferenciaValor[i] = Math.floor((valorMaximo[i] - valorMinimo[i]) / numeroDivisiones);
+							unidad[i] = config.grafico[i].unidad;
+							titulo[i] = config.grafico[i].titulo;
+							descripcionRobot[i] = config.grafico[i].descripcion;
+						}
+					}
+				}
+				xmlhttp.open('GET', rutaLector + '?archivo=' + rutaConfig, false); // false: Sincrónico 
+				xmlhttp.send(null);			
 			}
 		}
 
 		// Loop de funciones
-		var tempIzquierda = setInterval(function(){Coger(0)}, tiempoLoop);
-		var tempDerecha = setInterval(function(){Coger(1)}, tiempoLoop);
+		var tempIzquierda = setInterval(function(){Cargar(0)}, tiempoLoop);
+		var tempDerecha = setInterval(function(){Cargar(1)}, tiempoLoop);
 
 //==============================================================================
 		function cambiarTipo(tipo, posicion) {
@@ -284,51 +289,3 @@
 			else if(posicion == 1) derechaTipo = tipo;
 		}
 //==============================================================================
-
-	</script>
-</head>
-
-<!-- RESPONSIVO WideScreen hasta 300x400 canvas -->
-
-<body onload="config()">
-<div id="contenedor">
-	<nav>
-		<ul><li>Home</li>
-			<li>About</li>
-			<li>Vista
-			    <ul>Visor Izquierdo
-			    	<li onclick='cambiarTipo(0,0)'>Barra</li>
-			    	<li onclick='cambiarTipo(1,0)'>Torta</li>
-			    	Visor Derecho
-			    	<li onclick='cambiarTipo(0,1)'>Barra</li>
-			    	<li onclick='cambiarTipo(1,1)'>Torta</li>
-			    </ul>
-			</li>
-			<li>Ayuda</li>
-			<li>Contacto</li>
-		</ul>
-	</nav>
-	<div class="visualizador">
-		<div class="contenedor info-izquierda">
-			<canvas id="canvas_0" width="300" height="400">¡Canvas no está soportado!</canvas>
-		</div>
-		<div class="contenedor video-stream"> 
-			<video width="0" height="0" controls poster="test.jpg"  >
-				<source src="http://content.bitsontherun.com/videos/nfSyO85Q-27m5HpIu.webm" type="video/webm" />
-			</video>
-		</div>
-		<div class="contenedor info-derecha">
-			<canvas id="canvas_1" width="300" height="400">¡Canvas no está soportado!</canvas>
-		</div>
-	</div>
-	<div class="controlador">
-		<div></div>
-	</div>
-</div>
-
-<!-- TMP Borrar -->
-<div id="resultado"></div>
-
-
-</body>
-</html>

@@ -14,10 +14,14 @@ int main()
 		ofstream archivo[2];
 		archivo[0].open("../temperatura", ios::trunc);
 		archivo[1].open("../corriente", ios::trunc);
+		archivo[0] << "[";
+		archivo[1] << "[";
 		for(int i = 0; i < num ; i++ ){
-			archivo[0] << rand() % 90 + 0 << "	";
-			archivo[1] << rand() % 10 + 0 << "	";
+			archivo[0] << rand() % 90 + 0 << ",";
+			archivo[1] << rand() % 10 + 0 << ",";
 		}
+		archivo[0] << "-1 ]";
+		archivo[1] << "-1 ]";
 		archivo[0].close();
 		archivo[1].close();
 		sleep(1);
