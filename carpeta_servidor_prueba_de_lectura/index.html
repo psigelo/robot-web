@@ -6,6 +6,18 @@
 	<link rel="stylesheet" href="./css/style.css"/>
 	<script src="./lib/ConstructorXMLHttpRequest.js"></script>
 	<script src="./lib/Grafica.js"></script>
+	<script>
+		var canvas = document.getElementById('canvas_control');
+
+		if (canvas.getContext){
+
+			// Requerimiento de canvas
+			var ctx = canvas.getContext('2d');
+
+		}
+		else alert('Error: No se pudo cargar el objeto canvas');
+
+	</script>
 </head>
 
 <!-- RESPONSIVO WideScreen hasta 300x400 canvas -->
@@ -29,24 +41,24 @@
 			</ul>
 		</nav>
 		<div class="visualizador">
-			<div class="contenedor info-izquierda">
+			<div class="info-izquierda">
 				<canvas id="canvas_0" width="300" height="400">¡Canvas no está soportado!</canvas>
 			</div>
-			<div class="contenedor video-stream"> 
+			<div class="video-stream"> 
 
 				<!-- STREAM HERE -->
 				<video width="0" height="0" controls poster="test.jpg"  >
 					<source src="http://content.bitsontherun.com/videos/nfSyO85Q-27m5HpIu.webm" type="video/webm" />
 				</video>
 				<!-- /STREAM HERE -->
-				
+
 			</div>
-			<div class="contenedor info-derecha">
+			<div class="info-derecha">
 				<canvas id="canvas_1" width="300" height="400">¡Canvas no está soportado!</canvas>
 			</div>
 		</div>
-		<div class="controlador">
-			<div></div>
+		<div id="controlador">
+			<canvas id="canvas_control" width="900" height="300">¡Canvas no está soportado!</canvas>
 		</div>
 	</div>
 </body>

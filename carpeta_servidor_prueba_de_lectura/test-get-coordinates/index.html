@@ -1,0 +1,100 @@
+<!doctype html>
+
+<html>
+  <head>
+    <title>Get the coordinates on canvas</title>
+    <meta charset="utf-8" />
+    <style type="text/css">#canvas{border: 1px solid black; background-color: black;}</style>
+
+    <script type="text/javascript">
+
+      document.addEventListener("DOMContentLoaded", init, false);
+
+      function init()
+      {
+        var canvas = document.getElementById("canvas");
+        canvas.addEventListener("mousemove", getPosition, false);
+        getPosition({x : 0, y : 0});
+      }
+
+      function getPosition(event)
+      {
+        var x = new Number();
+        var y = new Number();
+        var canvas = document.getElementById("canvas");
+
+        if (event.x != undefined && event.y != undefined)
+        {
+          x = event.x;
+          y = event.y;
+        }
+        else // Firefox method to get the position
+        {
+          x = event.clientX + document.body.scrollLeft +
+              document.documentElement.scrollLeft;
+          y = event.clientY + document.body.scrollTop +
+              document.documentElement.scrollTop;
+        }
+
+        console.log('original (x,y) = (' + x + ',' + y + ')');
+
+        x -= canvas.offsetLeft + canvas.offsetWidth/2;
+        y = canvas.offsetTop + canvas.offsetHeight/2 - y; // Damos vuelta el eje de las ordenadas por comodidad
+
+        var teta;
+
+        if (x >= 0 && y >= 0)
+        {
+          teta = Math.atan(y/x);
+        }
+        else if (x <= 0) 
+        {
+          teta = Math.PI + Math.atan(y/x);
+        }
+        else if (x >= 0 && y <= 0)
+        {
+          teta = 2*Math.PI + Math.atan(y/x);
+        }
+
+        console.log('adaptado (x,y) = (' + x + ',' + y + ')');
+        console.log('teta(x,y) = ' + teta * (180 / Math.PI));
+
+        if (canvas.getContext){
+          var ctx = canvas.getContext('2d');
+
+          // Limpia las gráficas previas
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          var radio = 100;
+
+          var gradiente = ctx.createRadialGradient(canvas.offsetWidth/2,canvas.offsetWidth/2,radio,canvas.offsetWidth/2,canvas.offsetWidth/2,radio/10);
+          gradiente.addColorStop(0, 'rgba(0,160,255,0.7)');
+          gradiente.addColorStop(0.02, 'rgba(0,20,100,0.2)');
+          gradiente.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.fillStyle = gradiente;
+          ctx.beginPath()
+          ctx.arc(canvas.offsetWidth/2, canvas.offsetHeight/2, radio, 0, 2*Math.PI, false);
+          ctx.closePath()
+          ctx.fill();
+
+          ctx.save();
+          ctx.translate(canvas.offsetWidth/2, canvas.offsetHeight/2);
+          ctx.rotate(-teta);
+          ctx.fillStyle = 'rgba(0,160,255,0.7)';
+          ctx.beginPath()
+          ctx.arc(radio, 0, radio/10, 0, 2*Math.PI, false);
+          ctx.closePath()
+          ctx.fill();
+          ctx.restore();
+
+        }
+      }
+
+    </script>
+
+  </head>
+
+  <body>
+    <canvas id="canvas" width="300" height="300"></canvas>
+  </body>
+</html>
