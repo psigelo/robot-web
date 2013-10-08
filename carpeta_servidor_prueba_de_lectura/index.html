@@ -6,23 +6,11 @@
 	<link rel="stylesheet" href="./css/style.css"/>
 	<script src="./lib/ConstructorXMLHttpRequest.js"></script>
 	<script src="./lib/Grafica.js"></script>
-	<script>
-		var canvas = document.getElementById('canvas_control');
-
-		if (canvas.getContext){
-
-			// Requerimiento de canvas
-			var ctx = canvas.getContext('2d');
-
-		}
-		else alert('Error: No se pudo cargar el objeto canvas');
-
-	</script>
 </head>
 
 <!-- RESPONSIVO WideScreen hasta 300x400 canvas -->
 
-<body onload="config()">
+<body onload="init();">
 	<div id="contenedor">
 		<nav>
 			<ul><li>Home</li>
@@ -58,7 +46,7 @@
 			</div>
 		</div>
 		<div id="controlador">
-			<canvas id="canvas_control" width="900" height="300">¡Canvas no está soportado!</canvas>
+			<canvas id="canvas_control" width="250" height="250">¡Canvas no está soportado!</canvas>
 		</div>
 	</div>
 </body>

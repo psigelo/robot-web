@@ -70,6 +70,9 @@
 		var diferenciaValor = new Array();
 		var unidad = new Array();
 
+		// Angulo actual de dirección (con el controlador 360º)
+    	var anguloActual = 0;
+
 //==============================================================================
 
 		// Lee los datos de 'archivo' y genera una gráfica con los mismo en la
@@ -82,7 +85,6 @@
 				xmlhttp.onreadystatechange = function() {
 					if(xmlhttp.readyState == 4)
 					{
-						console.log(xmlhttp.responseText);
 						if(pos == 0) {
 							dibujarGrafica(JSON.parse(xmlhttp.responseText), pos, izquierdaEscalar, izquierdaTipo);
 						}
@@ -235,11 +237,11 @@
 //==============================================================================
 
 		// Configuración inicial de las variables globales.
-		function config(){
+		function init(){
 
-			// Creamos un objeto con todos los datos del archivo
-			//var config = <?php echo file_get_contents('../config'); ?>; // TMP -- Cambiar!
+			// Configuraciones iniciales del robot y de los visualizadores
 			var xmlhttp = ConstructorXMLHttpRequest();
+
 			if(!xmlhttp) alert('Error: No se pudo crear el objeto XMLHttpRequest');
 			else {
 				
@@ -277,6 +279,11 @@
 				xmlhttp.open('GET', rutaLector + '?archivo=' + rutaConfig, false); // false: Sincrónico 
 				xmlhttp.send(null);			
 			}
+
+			// Configuración inicial para los controles
+	    	var canvas = document.getElementById("canvas_control");
+	    	canvas.addEventListener("mousemove", function (evento) {dibujarDireccionador(evento, 0);}, false);
+	    	canvas.addEventListener("click", function (evento) {dibujarDireccionador(evento, 1);}, false);
 		}
 
 		// Loop de funciones
@@ -284,8 +291,105 @@
 		var tempDerecha = setInterval(function(){Cargar(1)}, tiempoLoop);
 
 //==============================================================================
+
+	// Dibuja la gráfica del controlador de direcciones 360º
+
+   	function dibujarDireccionador(evento, click) {
+
+    	var canvas = document.getElementById("canvas_control");
+
+        if (canvas.getContext){
+
+        	var arista = canvas.height;
+
+	       	// Posición del mouse, considerando el plano cartesiano con origen en el centro del canvas.
+	       	var x, y;
+
+	       	// Angulo con respecto al eje positivo de las abscisas
+	       	var angulo;
+
+	       	// Radio máximo del control
+	       	var radio = arista * 2 / 5;
+
+	       	// Requerimiento de canvas
+	       	var ctx = canvas.getContext('2d');
+
+	       	// Obtiene la posición del puntero dentro del canvas  
+	        if (evento.offsetX != undefined && evento.offsetY != undefined) {
+	        	x = evento.offsetX;
+	        	y = evento.offsetY;
+	    	}
+	        /*else { // Requerido sólo para Firefox
+	        	x = evento.layerX; // + document.body.scrollLeft + document.documentElement.scrollLeft;
+	        	y = evento.layerY; // + document.body.scrollTop + document.documentElement.scrollTop;
+	        }*/
+
+	        // Traslado de la posición obtenida hacia el centro del canvas
+        	x -=  arista/2;
+		    y = arista/2 - y; // Damos vuelta el eje de las ordenadas
+		        
+		    // Si el puntero está dentro radio del controlador ...
+		    if (x * x + y * y <= radio * radio * 1.21 ) {
+
+			    // Cálculo del angulo respecto al punto (x,y)
+			    angulo = Math.atan(y/x);
+			    if (x < 0)			angulo += Math.PI;
+			    else if (y <= 0) 	angulo += 2 * Math.PI;
+
+	        	// Limpia las gráficas previas
+			   	ctx.clearRect(0, 0, canvas.width, arista);
+
+		       	// Trasladamos el origen del canvas al centro del mismo
+		       	ctx.save();
+				ctx.translate(canvas.width/2, arista/2);
+				ctx.rotate(-angulo);
+
+				// Gradiente Circulo grande
+		       	var gradiente1 = ctx.createRadialGradient(0, 0, radio, 0, 0, 0);
+		       	gradiente1.addColorStop(0, 'rgba(0,160,255,0.7)');
+		       	gradiente1.addColorStop(0.05, 'rgba(0,20,100,0.2)');
+		       	gradiente1.addColorStop(1, 'rgba(0,0,0,0)');
+
+		       	// Gráfica Circulo grande
+		       	ctx.fillStyle = gradiente1;
+		       	ctx.beginPath();
+		       	ctx.arc(0, 0, radio, 0, 2*Math.PI, false);
+		       	ctx.closePath();
+		       	ctx.fill();
+
+		       	// Gráfica Circulo pequeño
+		       	ctx.fillStyle = 'rgba(0,160,255,0.5)';
+		    	ctx.beginPath();
+		       	ctx.arc(radio, 0, radio/10, 0, 2*Math.PI, false);
+		       	ctx.closePath();
+		       	ctx.fill();
+
+		       	ctx.restore();
+
+				// Angulo Actual actualizado
+		       	if (click == 1) { anguloActual = angulo; }
+
+		       	// Escritura de los ángulos
+		       	ctx.strokeStyle = '#464646';
+	  			ctx.fillStyle = '#6B6B6B';
+				ctx.font = '65px Arial'; 
+				ctx.textAlign = 'center';
+		       	ctx.fillStyle = 'rgb(255,255,255,0.5)';
+				ctx.fillText(Math.floor(anguloActual * 180 / Math.PI) + 'º', canvas.width * 0.52, canvas.height / 2);
+				ctx.font = '30px Arial'; 
+				ctx.fillText(Math.floor(angulo * 180 / Math.PI) + 'º', canvas.width * 0.52, canvas.height * 2 / 3 );
+	        }
+	    }
+      }
+
+//==============================================================================
+
 		function cambiarTipo(tipo, posicion) {
 			if(posicion == 0) izquierdaTipo = tipo; 
 			else if(posicion == 1) derechaTipo = tipo;
 		}
+
 //==============================================================================
+
+
+
